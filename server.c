@@ -12,6 +12,7 @@
 
 #include <unistd.h>
 #include <signal.h>
+#include <stdio.h>
 
 void	ft_putnbr(int nb)
 {
@@ -27,19 +28,22 @@ void	ft_putstr_fd(char *str, int fd)
 			write(fd, str++, 1);
 }
 
-void	signal_reciver(int sig, siginfo_t *info, void *unused)
+void	reciver(int sig, siginfo_t *info, void *unused)
 {
 	static int	bit;
 	static char	c;
 	static int	pid_client = 0;
 
    (void)unused;
+//    printf("info pid == %d\n", info->si_pid);
+//    printf("pid client == %d\n", pid_client);
 	if (info->si_pid != pid_client)
 	{
 		bit = 0;
 		c = 0;
 		pid_client = info->si_pid;
 	}
+	//printf("bits == %d\n", bit);
 	c = c << 1 | (sig - 30);
 	if (++bit < 8)
 		return ;
@@ -54,10 +58,11 @@ int	main(void)
 {
    struct sigaction	s_action;
 
-	s_action.sa_sigaction = &signal_reciver;
+	s_action.sa_sigaction = &reciver;
 	s_action.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &s_action, NULL);
 	sigaction(SIGUSR2, &s_action, NULL);
+	ft_putstr_fd("Pid :",1);
 	ft_putnbr(getpid());
 	write(1, "\n", 1);
 	while (1)
