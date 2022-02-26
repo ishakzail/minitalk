@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.c                                           :+:      :+:    :+:   */
+/*   client_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: izail <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/17 12:05:51 by izail             #+#    #+#             */
-/*   Updated: 2022/02/24 13:20:41 by izail            ###   ########.fr       */
+/*   Created: 2022/02/24 11:28:01 by izail             #+#    #+#             */
+/*   Updated: 2022/02/24 14:40:36 by izail            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,12 @@ int	check_if_int(char *str)
 	return (1);
 }
 
+void	message_recived(int signum)
+{
+	if (signum == SIGUSR1)
+		write(1, "\x1b[32mSignal Recived\n", 20);
+}
+
 void	send_bits(int c, int pid)
 {
 	int	i;
@@ -75,6 +81,7 @@ int	main(int ac, char **av)
 {
 	int	pid;
 
+	signal(SIGUSR1, &message_recived);
 	if (ac == 3)
 	{
 		pid = ft_atoi(av[1]);
